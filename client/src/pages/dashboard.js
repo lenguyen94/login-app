@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from 'react';
-import { readUser, readUsers, updateUser, updatePassword, logoutUser } from '../utils/serverHandler'
+import { readUser, readUsers, updateUser, updatePassword, logoutUser, updateSession } from '../utils/serverHandler'
 
 import {
     Grid, Card, CardContent, Typography, Button, CardActions,
@@ -19,7 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const defaultTheme = createTheme();
 
 const Dashboard = (props) => {
-    const { user } = props
+    const { user, token } = props
     const [edit, setEdit] = useState(false)
     const [openDiaglog, setOpenDialog] = useState(false);
 
@@ -30,20 +30,28 @@ const Dashboard = (props) => {
 
 
     var [users, setUsers] = useState([{
-        id: null,
-        username: null,
-        loginCount: null,
-        signUpTimestamp: null,
-        sessionTimestamp: null
+        id: 0,
+        username: '',
+        loginCount: 1,
+        signUpTimestamp: 0,
+        sessionTimestamp: 0
     }]);
 
     const navigate = useNavigate();
 
 
     useEffect(() => {
-        if (user){
-            setUsername(user.username)
-            readUsers().then(r => { setUsers(r.users) })
+        console.log(token, user)
+        if (token) {
+            readUser(token).then(r => {
+                if (r) { props.setUser(r) }
+                setUsername(r.username)
+                readUsers(token).then(r => { setUsers(r.users) })
+                updateSession(token)
+            })
+        }
+        else {
+            console.log('no valid token in dashboard menu? server error?')
         }
     }, [])
 
@@ -52,7 +60,7 @@ const Dashboard = (props) => {
             return window.alert("New passwords are not the same")
         }
 
-        updatePassword(password_2, password_1).then(r => {
+        updatePassword(token, password_2, password_1).then(r => {
             if (r.error) { return window.alert(r.error) }
             window.alert(r.message)
             setOpenDialog(false);
@@ -61,27 +69,31 @@ const Dashboard = (props) => {
     };
 
     const handleRefresh = () => {
-        readUsers().then(r => { setUsers(r.users) })
+        // readUsers(token)
+        readUsers(token).then(r => { setUsers(r.users) })
     }
 
     const handleUpdate = () => {
         setEdit(false)
-        updateUser(username).then(r => {
+        updateUser(token, username).then(r => {
             if (r.error) { return window.alert(r.error) }
-            readUser().then(r => {
+            window.alert(r.message)
+            readUser(token).then(r => {
+                console.log(r)
                 props.setUser(r)
-                window.alert(r.message)
                 // localStorage.setItem("user", JSON.stringify(r))
             })
         })
     }
 
-    const _logout = () => {
-        logoutUser().then(r => {
+    const handleLogout = () => {
+        logoutUser(token).then(r => {
             if (!r || r.error) { console.log('logout', r) }
             else {
                 props.setLoggedIn(false)
-                // localStorage.removeItem("user", JSON.stringify(r))
+                localStorage.removeItem("user", JSON.stringify(r))
+                localStorage.removeItem("token", JSON.stringify(r))
+                updateSession(token)
                 navigate("/")
             }
         })
@@ -154,7 +166,7 @@ const Dashboard = (props) => {
                             </Typography>
                         </CardContent>
                         <CardActions >
-                            <Button onClick={_logout} size="small">Log Out</Button>
+                            <Button onClick={handleLogout} size="small">Log Out</Button>
                             <Button size="small" onClick={(e) => { setOpenDialog(true) }}>Change Password </Button>
                         </CardActions>
                     </Card>

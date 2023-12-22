@@ -10,28 +10,27 @@ import Protect from '../guards/protect';
 import SignUp from '../pages/signup';
 import Redirect from '../pages/redirect';
 
-import { updateSession } from '../utils/serverHandler';
 
 function App() {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [token,setToken] = useState(localStorage.getItem("token") );
+  const [user, setUser] = useState(token? {id:0, username:'', email:'' }:null);
   const [loggedIn, setLoggedIn] = useState(Boolean(user))
 
   useEffect(() => {
-    updateSession()
 }, [])
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Redirect user={user} setUser={setUser} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route path="/" element={<Redirect user={user} setUser={setUser} loggedIn={loggedIn} setLoggedIn={setLoggedIn} token={token} setToken={setToken} />} />
+          <Route path="/redirect" element={<Redirect user={user} setUser={setUser} loggedIn={loggedIn} setLoggedIn={setLoggedIn} token={token} setToken={setToken}/>} />
           <Route path="/home" element={<Home />} />
-          <Route path="/login-google" element={<Home user={user} setUser={setUser} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          <Route path="/signin" element={<SignIn setLoggedIn={setLoggedIn} setUser={setUser} />} />
+          <Route path="/signin" element={<SignIn setLoggedIn={setLoggedIn} token = {token} setToken={setToken} setUser={setUser}/>} />
           <Route path="/signup" element={<SignUp setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/dashboard" element={
             <Protect loggedIn={loggedIn}>
-              <Dashboard loggedIn={loggedIn} setLoggedIn={setLoggedIn} user={user} setUser={setUser} />
+              <Dashboard loggedIn={loggedIn} setLoggedIn={setLoggedIn} user={user} setUser={setUser} token={token} />
             </Protect>
           } />
         </Routes>

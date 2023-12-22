@@ -45,14 +45,20 @@ const verifyPassword = async (req, res, next) => {
 
 const verifyToken = (req, res, next) => {
   try {
+    var token;
+    // check for token in both authorization & cookies
+    if (req.cookies) {
+      token = req.cookies['jwt-token']
+    }
+    if (!token && req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1]
+    }
 
-    if (!req.cookies) { throw new Error('No cookies') }
-
-    const token = req.cookies['jwt-token']
     if (!token) { throw new Error('No JWT Token detected') }
 
     const decoded = jwt.verify(token, process.env.SECRETKEY);
     req.userId = decoded.id;
+    console.log(3,decoded)
     next();
   } catch (error) {
     console.log(error);

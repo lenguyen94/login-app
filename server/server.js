@@ -10,25 +10,27 @@ const cors = require('cors')
 const session = require('express-session');
 
 const initializePassport = require("./controllers/passportController");
-const userRoutes = require ('./routes/api_routes')
+const userRoutes = require('./routes/api_routes')
 
 initializePassport(passport);
 
 //assigning the variable app to express
 const app = express()
 
-app.use(
-  cors({
-   credentials: true,
-   origin: true,
-  })
- );
+
 
 //middleware
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(express.urlencoded({ extended: false }))
 app.use(helmet())
+
+app.use(
+  cors({
+    credentials: true,
+    origin: true,
+  })
+);
 
 app.use(session({
   resave: false,
@@ -40,12 +42,8 @@ app.use(passport.session());
 
 ////synchronizing the database. Forcing it to false to keep the data
 // db.sequelize.sync({ force: true }).then(() => {
-// db.sequelize.sync().then(() => {
-//     console.log("db has been re sync")
-// })
-
-app.get('/', (req, res) => {
-  res.status(200).json('server');
+db.sequelize.sync().then(() => {
+  console.log("db has been re sync")
 })
 
 //routes for the user API

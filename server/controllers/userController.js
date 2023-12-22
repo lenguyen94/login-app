@@ -51,10 +51,10 @@ const login = async (req, res, next) => {
         req.logIn(user, function (error) { if (error) throw error });
         // own protocol, increase login count + create jwt token
         Stats.increment('loginCount', { by: 1, where: { userId: user.id } });
-        _createToken(user, res, '30d');
+        token = _createToken(user, res, '30d');
         _updateSession(user.id)
 
-        return res.status(200).json(user);
+        return res.status(200).json({token});
       }
     } catch (error) {
       console.log(error);
@@ -71,11 +71,12 @@ const loginGoogle = async (req, res) => {
       req.logIn(user, function (error) { if (error) throw error });
       // own protocol, increase login count + create jwt token
       Stats.increment('loginCount', { by: 1, where: { userId: user.id } });
-      _createToken(user, res, '30d');
+      token = _createToken(user, res, '30d');
       _updateSession(user.id);
 
-      return res.redirect(`${process.env.CLIENT_URL}`);
-      // return res.json({ user });
+      console.log(`${process.env.CLIENT_URL}/redirect?token=${token}`)
+      return res.redirect(`${process.env.CLIENT_URL}/redirect?token=${token}`);
+      // return res.json({ token });
     } catch (error) {
       console.log(error);
       return res.status(400).json({ error: error.toString() });
@@ -96,7 +97,6 @@ const getUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    console.log(1);
     results = await User.findAll({
       attributes: {
         include: ['id', 'username',

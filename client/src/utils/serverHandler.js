@@ -6,7 +6,10 @@ const loginUser = async (email, password) => {
       'Content-Type': 'application/json'
     },
     credentials: "include",
-    body: JSON.stringify({ email, password })
+    // body: JSON.stringify({ email, password })
+    body: JSON.stringify({ 
+      email:"tester1@email.com",
+       password: "tester1" })
   }).then(r => r.json())
 }
 
@@ -32,29 +35,35 @@ const signupUser = async (username, email, password) => {
   }).then(r => r.json())
 }
 
-const readUsers = async () => {
+const readUsers = async (token) => {
   return fetch(global.config.apiServer + "/readAll", {
     method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'JWT ' + token
+    },
     credentials: "include",
   }).then(r => r.json())
 }
 
-const updateUser = async (username) => {
+const updateUser = async (token,username) => {
   return fetch(global.config.apiServer + "/update", {
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'JWT ' + token
     },
     body: JSON.stringify({ username }),
     credentials: "include",
   }).then(r => r.json())
 }
 
-const updatePassword = async (password, passwordOld) => {
+const updatePassword = async (token, password, passwordOld) => {
   return fetch(global.config.apiServer + "/update-pw", {
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'JWT ' + token
     },
     body: JSON.stringify({ password, passwordOld }),
     credentials: "include",
@@ -62,16 +71,24 @@ const updatePassword = async (password, passwordOld) => {
 }
 
 
-const updateSession = async () => {
+const updateSession = async (token) => {
   return fetch(global.config.apiServer + "/updateSession", {
     method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'JWT ' + token
+    },
     credentials: "include"
   }).then(r => r.json())
 }
 
-const readUser = async () => {
+const readUser = async (token) => {
   return fetch(global.config.apiServer + "/read", {
     method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'JWT ' + token
+    },
     credentials: "include"
   }).then(r => r.json())
 }
@@ -89,17 +106,18 @@ const resendEmail = async (email) => {
   }).then(r => r.json())
 }
 
-const logoutUser = async () => {
+const logoutUser = async (token) => {
   return fetch(global.config.apiServer + "/logout", {
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'JWT ' + token
     },
     credentials: "include"
   }).then(r => r.json())
 }
 
 
-
-
-module.exports = { loginUser, loginUserGG, signupUser, readUser, readUsers, updateUser, updatePassword, updateSession, resendEmail, logoutUser }
+export {
+  loginUser, loginUserGG, signupUser, readUser, readUsers, updateUser, updatePassword, updateSession, resendEmail, logoutUser
+}

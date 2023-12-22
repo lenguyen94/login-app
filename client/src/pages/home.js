@@ -52,7 +52,7 @@ const Home = () => {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 5, mb: 2 }}
-                        onClick={() => { window.open("http://localhost:3000/api/users/login-google", "_self") }}
+                        onClick={() => { window.open(`${global.config.apiServer}/login-google`, "_self") }}
                     >
                         Sign In with Google
                     </Button>

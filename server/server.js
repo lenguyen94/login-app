@@ -20,7 +20,7 @@ const app = express()
 app.use(
   cors({
    credentials: true,
-   origin: process.env.CLIENT_URL,
+   origin: true,
   })
  );
 
@@ -40,9 +40,9 @@ app.use(passport.session());
 
 ////synchronizing the database. Forcing it to false to keep the data
 // db.sequelize.sync({ force: true }).then(() => {
-db.sequelize.sync().then(() => {
-    console.log("db has been re sync")
-})
+// db.sequelize.sync().then(() => {
+//     console.log("db has been re sync")
+// })
 
 //routes for the user API
 app.use('/api/users', userRoutes)

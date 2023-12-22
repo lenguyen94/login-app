@@ -44,6 +44,10 @@ app.use(passport.session());
 //     console.log("db has been re sync")
 // })
 
+app.get('/', (req, res) => {
+  res.status(200).json('server');
+})
+
 //routes for the user API
 app.use('/api/users', userRoutes)
 

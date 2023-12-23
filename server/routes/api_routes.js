@@ -35,7 +35,7 @@ router.post('/update-pw', userAuth.verifyToken, userAuth.verifyPassword, userCon
 router.post('/updateSession', userAuth.verifyToken, userController.updateSession)
 
 // misc
-router.post('/verify-token', userAuth.verifyToken, userAuth.checkAuthenticated, (req, res) => res.end())
+router.post('/verify-token', userAuth.verifyToken, (req, res) => res.end())
 
 
 module.exports = router

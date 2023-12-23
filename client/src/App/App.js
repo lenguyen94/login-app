@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import '../css/App.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import React from 'react';
 
 import Home from '../pages/home';
@@ -15,9 +15,6 @@ function App() {
   const [token,setToken] = useState(localStorage.getItem("token") );
   const [user, setUser] = useState(token? {id:0, username:'', email:'' }:null);
   const [loggedIn, setLoggedIn] = useState(Boolean(user))
-
-  useEffect(() => {
-}, [])
 
   return (
     <div className="App">

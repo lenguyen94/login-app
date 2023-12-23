@@ -40,10 +40,13 @@ app.use(session({
 
 app.use(passport.session());
 
-////synchronizing the database. Forcing it to false to keep the data
-// db.sequelize.sync({ force: true }).then(() => {
-db.sequelize.sync().then(() => {
+//synchronizing the database. Forcing it to false to keep the data
+db.sequelize.sync({ force: false }).then(() => {
   console.log("db has been re sync")
+})
+
+app.get('/', (req, res) => {
+  res.send('server')
 })
 
 //routes for the user API

@@ -45,6 +45,9 @@ const Dashboard = (props) => {
         if (token) {
             readUser(token).then(r => {
                 if (r) { props.setUser(r) }
+                else{
+                    navigate('/')
+                }
                 setUsername(r.username)
                 readUsers(token).then(r => { setUsers(r.users) })
                 updateSession(token)
@@ -94,8 +97,8 @@ const Dashboard = (props) => {
                 localStorage.removeItem("user", JSON.stringify(r))
                 localStorage.removeItem("token", JSON.stringify(r))
                 updateSession(token)
-                navigate("/")
             }
+            navigate("/")
         })
     }
 
@@ -103,10 +106,11 @@ const Dashboard = (props) => {
     return <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="ms">
             <CssBaseline />
+
+            
             <Dialog open={openDiaglog} onClose={(e) => { setOpenDialog(false) }}>
                 <DialogTitle>Change Password</DialogTitle>
                 <DialogContent>
-
                     <TextField
                         autoFocus
                         margin="dense"
@@ -152,17 +156,17 @@ const Dashboard = (props) => {
                                 <Button variant="text" onClick={handleUpdate}>Update</Button>,
                                 <Button variant="text" onClick={(e) => { setEdit(false) }}> Cancel </Button>
                                 ] :
-                                [<Typography variant="h5">{user.username}</Typography>,
+                                [<Typography variant="h5">{username}</Typography>,
                                 <Button variant="text" onClick={(e) => { setEdit(true) }}>Edit</Button>
                                 ]
                             }
                             </Stack>
                             <Typography variant="body">
-                                ID: {user.id}
+                                ID: {user ? user.id: 0}
                                 <br></br>
-                                Username: {user.username}
+                                Username: {username}
                                 <br></br>
-                                Email: {user.email}
+                                Email: {user?user.email:""}
                             </Typography>
                         </CardContent>
                         <CardActions >

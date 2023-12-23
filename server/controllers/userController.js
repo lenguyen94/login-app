@@ -31,9 +31,10 @@ const signup = async (req, res) => {
       userId: user.id,
       token: crypto.randomBytes(16).toString("hex"),
     });
-    _createEmail(user, token);
+    console.log(token)
+    // _createEmail(user, token);
 
-    return res.status(201).json(user);
+    return res.status(201).json({ "message": "success", token });
 
   } catch (error) {
     console.log(error);
@@ -54,7 +55,7 @@ const login = async (req, res, next) => {
         token = _createToken(user, res, '30d');
         _updateSession(user.id)
 
-        return res.status(200).json({token});
+        return res.status(200).json({ token });
       }
     } catch (error) {
       console.log(error);
@@ -87,12 +88,13 @@ const loginGoogle = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const userId = req.userId;
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } });
     res.status(200).json(user);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: error.toString() });
   }
+
 }
 
 const getAllUsers = async (req, res) => {
@@ -201,7 +203,7 @@ const resendEmail = async (req, res) => {
     }
     if (!token) { throw new Error("token not created.") }
 
-    const link = _createEmail(user, token);
+    link = await _createEmail(user, token);
     return res.status(200).json({ link });
   } catch (error) {
     console.log(error);
@@ -247,7 +249,7 @@ const _createToken = (user, res, duration) => {
 }
 
 const _createEmail = async (user, token) => {
-  const link = `http://${process.env.HOST}:${process.env.PORT}/api/users/verify-email/${user.id}/${token.token} `;
+  var link = `http://${process.env.HOST}:${process.env.PORT}/api/users/verify-email/${user.id}/${token.token} `;
 
   sendingMail({
     from: "no-reply@example.com",

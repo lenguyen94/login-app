@@ -6,10 +6,10 @@ const loginUser = async (email, password) => {
       'Content-Type': 'application/json'
     },
     credentials: "include",
-    // body: JSON.stringify({ email, password })
-    body: JSON.stringify({ 
-      email:"tester1@email.com",
-       password: "tester1" })
+    body: JSON.stringify({ email, password })
+    // body: JSON.stringify({ 
+    //   email:"tester1@email.com",
+    //    password: "tester1" })
   }).then(r => r.json())
 }
 

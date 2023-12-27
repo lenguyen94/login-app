@@ -26,7 +26,7 @@
 
 Navigate to both /client and /server:
 - create .env file based on .env-example
-- `npm -install`
+- `npm install`
 - `npm start`  
 
 

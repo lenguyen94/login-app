@@ -32,7 +32,7 @@ const signup = async (req, res) => {
       token: crypto.randomBytes(16).toString("hex"),
     });
     console.log(token)
-    // _createEmail(user, token);
+    _createEmail(user, token);
 
     return res.status(201).json({ "message": "success", token });
 
@@ -249,7 +249,7 @@ const _createToken = (user, res, duration) => {
 }
 
 const _createEmail = async (user, token) => {
-  var link = `http://${process.env.HOST}:${process.env.PORT}/api/users/verify-email/${user.id}/${token.token} `;
+  var link = `${process.env.SERVER_URL}/api/users/verify-email/${user.id}/${token.token} `;
 
   sendingMail({
     from: "no-reply@example.com",

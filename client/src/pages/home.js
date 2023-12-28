@@ -5,6 +5,8 @@ import {
     Button, CssBaseline, Box, Typography, Container
 } from '@mui/material';
 
+import GoogleIcon from '@mui/icons-material/Google';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
@@ -47,7 +49,7 @@ const Home = () => {
                     >
                         Sign up
                     </Button>
-                    <Button
+                    <Button startIcon={<GoogleIcon />}
                         type="submit"
                         fullWidth
                         variant="contained"

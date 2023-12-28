@@ -61,7 +61,7 @@ function initialize(passport) {
     new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/users/login-google/callback",
+      callbackURL: process.env.SERVER_URL + "/api/users/login-google/callback",
       scope: ['profile']
     }, _loginGoogle
     )
